@@ -128,6 +128,11 @@ class Chef
           name, path = h.split("=")
           Chef::Config[:knife][:hints][name] = path ? JSON.parse(::File.read(path)) : Hash.new  }
 
+      option :why_run,
+        :short => '-W',
+        :long => '--why-run',
+        :description => 'Enable whyrun mode'
+
       def find_template(template=nil)
         # Are we bootstrapping using an already shipped template?
         if config[:template_file]

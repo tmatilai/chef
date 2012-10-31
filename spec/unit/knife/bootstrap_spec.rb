@@ -116,6 +116,20 @@ describe Chef::Knife::Bootstrap do
     @knife.render_template(template_string).should match /\{\"foo\":\"bar\"\}/
   end
 
+  it "should set whyrun mode to chef-client when told to" do
+    @knife.config[:template_file] = File.expand_path(File.join(CHEF_SPEC_DATA, "bootstrap", "test-client.erb"))
+    @knife.instance_variable_set("@template_file", @knife.config[:template_file])
+    template_string = @knife.read_template
+    @knife.parse_options(["--why-run"])
+    @knife.render_template(template_string).should match /\s-W(\s|$)/
+  end
+
+  it "should not set whyrun mode to chef-client by default" do
+    @knife.config[:template_file] = File.expand_path(File.join(CHEF_SPEC_DATA, "bootstrap", "test-client.erb"))
+    @knife.instance_variable_set("@template_file", @knife.config[:template_file])
+    template_string = @knife.read_template
+    @knife.render_template(template_string).should_not match /\s-W(\s|$)/
+  end
 
   it "should take the node name from ARGV" do
     @knife.name_args = ['barf']
